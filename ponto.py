@@ -3,43 +3,53 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 import schedule
-from datetime import datetime
+from utils import translate,datetime_logger
+from time import sleep
 
-chrome_options = Options()
-#chrome_options.add_argument("--no-sandbox") # linux only
-chrome_options.add_argument("--headless")
+class ClockPuncher:
+    
+    routine=('09:00', '12:00', '13:00', '18:00')
 
-class Scheduler:
+    chrome_options=Options()
+    chrome_options.add_argument("--headless")
 
     def __init__(self,user,password):
         self.user=user
         self.password=password
-        self.schedule()
 
-    def schedule(self):
-        rotina=('09:00', '12:00', '13:00', '18:00')
-        #scheduled=''
-        for horario in rotina:
-            schedule.every().monday.at(horario).do(self.bater_ponto)
-            schedule.every().tuesday.at(horario).do(self.bater_ponto)
-            schedule.every().wednesday.at(horario).do(self.bater_ponto)
-            schedule.every().thursday.at(horario).do(self.bater_ponto)
-            schedule.every().friday.at(horario).do(self.bater_ponto)
-        scheduled=', '.join([x for x in rotina])
-        print(f'horários agendados: {scheduled}')
-        #print(schedule.get_jobs())
+        self.main_scheduler=schedule.Scheduler()
+        self.schedule_my_week()
 
+        self.monitor=schedule.Scheduler()
+        self.monitor.every().hour.do(self.notify_next_run)
+        
+        self.notify_next_run()
+
+    def notify_next_run(self):
+        weekday,month,day,time,year=min([job.next_run for job in self.main_scheduler.get_jobs()]).ctime().split(' ')
+        print(f'próxima execução: {translate(weekday)}, dia {day} de {translate(month)} de {year}, às {time[:-3]}\n')
+
+    def schedule_my_week(self):
+        print(f'agendando rotina para o usuário "{self.user}"...\n')
+        for time in self.routine:
+            self.main_scheduler.every().monday.at(time).do(self.clock_in)
+            self.main_scheduler.every().tuesday.at(time).do(self.clock_in)
+            self.main_scheduler.every().wednesday.at(time).do(self.clock_in)
+            self.main_scheduler.every().thursday.at(time).do(self.clock_in)
+            self.main_scheduler.every().friday.at(time).do(self.clock_in)
+        print('horários agendados semanalmente: {}\n'.format(', '.join([x for x in self.routine])))
+        
     def run(self):
         while True:
-            schedule.run_pending()
+            self.main_scheduler.run_pending()
+            self.monitor.run_pending()
+            sleep(1)
     
-    def bater_ponto(self):
-        driver=Chrome(options=chrome_options)
+    @datetime_logger
+    def clock_in(self):
+        driver=Chrome(options=self.chrome_options)
         driver.implicitly_wait(10)
         driver.get('https://www.dimepkairos.com.br/Dimep/Account/Marcacao')
         driver.find_element(By.ID,'UserName').send_keys(self.user)
         driver.find_element(By.ID,'Password').send_keys(self.password+Keys.RETURN)
-        datetime_isostring=datetime.now().replace(microsecond=0).isoformat()
-        date,time=datetime_isostring.split('T')
-        print(f'marcação de ponto realizada no dia {date} às {time}')
         driver.quit()
