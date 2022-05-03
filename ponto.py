@@ -26,7 +26,10 @@ class ClockPuncher:
         self.notify_next_run()
 
     def notify_next_run(self):
-        weekday,month,day,time,year=min([job.next_run for job in self.main_scheduler.get_jobs()]).ctime().split(' ')
+        try:
+            weekday,month,day,time,year=min([job.next_run for job in self.main_scheduler.get_jobs()]).ctime().split(' ')
+        except ValueError:
+            weekday,month,trash,day,time,year=min([job.next_run for job in self.main_scheduler.get_jobs()]).ctime().split(' ')
         print(f'próxima execução: {translate(weekday)}, dia {day} de {translate(month)} de {year}, às {time[:-3]}\n')
 
     def schedule_my_week(self):
