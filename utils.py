@@ -28,7 +28,7 @@ def translate(word):
 def datetime_logger(function):
 
     def wrapper(*args,**kwargs):
-        print(f'Function: {function.__name__}\nRun on: {datetime.today().strftime("%Y-%m-%d %H:%M:%S")}\n')
+        print(f'Function: {function.__name__}\nRun on: {datetime.today().strftime("%Y-%m-%d %H:%M:%S")}')
         return function(*args,**kwargs)
 
     return wrapper
