@@ -10,7 +10,7 @@ from time import sleep
 
 class ClockPuncher:
     
-    routine=('09:00', '12:00', '13:11', '18:00')
+    routine=('09:00', '12:00', '13:00', '18:00')
 
     chrome_options = Options()
     chrome_options.add_argument("--headless")
