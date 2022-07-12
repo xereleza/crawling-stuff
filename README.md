@@ -1,3 +1,2 @@
-<p align="center">
-    <h1> Clock Puncher </h1>
-</p>
+
+<h1 align="center"> Clock Puncher </h1>
