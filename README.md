@@ -1,5 +1,5 @@
 
-<h1 align="center">Crawling-Stuff: Python scripts for daily webcrawling 🤖</h1>
+# 🤖 Crawling-Stuff 🤖
 
 ## 📜 About
 This repository contains the class **_ClockPuncher_**, used to automate the process of **clocking in** via [Dimep Kairos](https://www.dimepkairos.com.br/).
