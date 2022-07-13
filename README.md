@@ -1,5 +1,5 @@
 
-# 🤖 Crawling-Stuff 🤖
+<h1 align="center">🤖 Crawling-Stuff 🤖</h1>
 
 ## 📜 About
 This repository contains the class **_ClockPuncher_**, used to automate the process of **clocking in** via [Dimep Kairos](https://www.dimepkairos.com.br/).
